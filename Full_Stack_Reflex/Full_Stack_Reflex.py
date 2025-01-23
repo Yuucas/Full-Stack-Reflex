@@ -12,11 +12,18 @@ class State(rx.State):
     def handle_title_input_change(self, val):
         self.label = val
 
+def base_page(*args, **kwargs) -> rx.Component:
+    # Print the type of the arguments in the base page
+    print([type(x) for x in args])
+    return rx.container(
+        *args,
+        rx.logo(),
+        rx.color_mode.button(position="bottom-left"),
+    )
 
 def index() -> rx.Component:
     # Welcome Page (Index)
-    return rx.container(
-        rx.color_mode.button(position="top-right"),
+    return base_page(
         rx.vstack(
             rx.heading(State.label, size="9"),
             rx.text(
@@ -37,7 +44,6 @@ def index() -> rx.Component:
             justify="center",
             min_height="85vh",
         ),
-        rx.logo(),
     )
 
 
