@@ -1,13 +1,12 @@
 import reflex as rx
 
-from rxconfig import config
 
 def navbar_link(text: str, url: str) -> rx.Component:
     return rx.link(
         rx.text(text, size="4", weight="medium"), href=url
     )
 
-
+# id: is used to identify spesific names to components in the browser
 def navbar() -> rx.Component:
     return rx.box(
         rx.desktop_only(
@@ -43,6 +42,7 @@ def navbar() -> rx.Component:
                 ),
                 justify="between",
                 align_items="center",
+                id="main_page_navbar"
             ),
         ),
         rx.mobile_and_tablet(

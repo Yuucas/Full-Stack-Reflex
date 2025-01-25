@@ -10,9 +10,11 @@ def base_page(child: rx.Component, *args, **kwargs) -> rx.Component:
         child = rx.heading("This is not a valid child element")
 
     # Child: is used to call the components of the container in every page
+    # id: is used to identify spesific names to components in the browser
     return rx.container(
         navbar(),
         child,
-        # rx.logo(),
-        rx.color_mode.button(position="top-right"),
+        rx.logo(),
+        rx.color_mode.button(position="top-right", id='my-light-model-btn'),
+        id='my-base-container'
     )
