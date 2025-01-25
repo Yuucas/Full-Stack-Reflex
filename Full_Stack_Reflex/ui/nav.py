@@ -12,22 +12,28 @@ def navbar() -> rx.Component:
         rx.desktop_only(
             rx.hstack(
                 rx.hstack(
-                    rx.image(
+                    rx.link(
+                        rx.image(
                         src="/mechanicaai.png",
                         width="2.25em",
                         height="auto",
                         border_radius="25%",
+                        ),
+                        href='/'
                     ),
-                    rx.heading(
+                    rx.link(
+                        rx.heading(
                         "Mechanica AI", size="7", weight="bold"
+                        ),
+                        href="/"
                     ),
                     align_items="center",
                 ),
                 rx.hstack(
                     navbar_link("Home", "/#"),
-                    navbar_link("About", "/#"),
-                    navbar_link("Pricing", "/#"),
-                    navbar_link("Contact", "/#"),
+                    navbar_link("About", "/about"),
+                    navbar_link("Pricing", "/pricing"),
+                    navbar_link("Contact", "/contact"),
                     spacing="5",
                 ),
                 rx.hstack(
@@ -49,7 +55,7 @@ def navbar() -> rx.Component:
             rx.hstack(
                 rx.hstack(
                     rx.image(
-                        src="/mechanicaai.jpg",
+                        src="/mechanicaai.png",
                         width="2em",
                         height="auto",
                         border_radius="25%",

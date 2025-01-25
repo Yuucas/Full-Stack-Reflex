@@ -30,9 +30,9 @@ def index() -> rx.Component:
                 on_change=State.handle_title_input_change,
             ),
             rx.link(
-                rx.button("Check out our docs!"),
-                href="https://reflex.dev/docs/getting-started/introduction/",
-                is_external=True,
+                rx.button("Go to about page"),
+                href="/about",
+                is_external=False,
             ),
             spacing="5",
             justify="center",
