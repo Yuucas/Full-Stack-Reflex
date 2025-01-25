@@ -11,10 +11,19 @@ def base_page(child: rx.Component, *args, **kwargs) -> rx.Component:
 
     # Child: is used to call the components of the container in every page
     # id: is used to identify spesific names to components in the browser
-    return rx.container(
+    # if you change rx.container to rx.fragment the component will not be rendered as a container
+    return rx.fragment(
         navbar(),
-        child,
+        rx.box(
+            child,
+            bg=rx.color("accent", 3),
+            padding="1em",
+            # position="fixed",
+            # top="0px",
+            # z_index="5",
+            width="100%",
+        ),
         rx.logo(),
-        rx.color_mode.button(position="top-right", id='my-light-model-btn'),
+        rx.color_mode.button(position="bottom-right", id='dark-and-light-mode-btn'),
         id='my-base-container'
     )
