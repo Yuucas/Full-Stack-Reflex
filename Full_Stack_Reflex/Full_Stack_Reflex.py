@@ -15,25 +15,16 @@ class State(rx.State):
     def handle_title_input_change(self, val):
         self.label = val
 
+    def did_click(self):
+        print("Hello Did Click")
+        return rx.redirect(path="/about")
+
 
 def index() -> rx.Component:
 
     my_child = rx.vstack(
             rx.heading(State.label, size="9"),
-            rx.text(
-                "Get started by editing ",
-                rx.code(f"{config.app_name}/{config.app_name}.py"),
-                size="5",
-            ),
-            rx.input(
-                default_value=State.label,
-                on_change=State.handle_title_input_change,
-            ),
-            rx.link(
-                rx.button("Go to about page"),
-                href="/about",
-                is_external=False,
-            ),
+            rx.button("About Money", on_click=State.did_click),
             spacing="5",
             justify="center",
             align='center',
@@ -47,5 +38,5 @@ def index() -> rx.Component:
 
 app = rx.App()
 app.add_page(index)
-app.add_page(pages.about_page, route='/about')
+# app.add_page(pages.about_page, route='/about')
 app.add_page(pages.pricing_page, route='/pricing')

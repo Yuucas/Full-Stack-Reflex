@@ -3,7 +3,7 @@ import reflex as rx
 
 def navbar_link(text: str, url: str) -> rx.Component:
     return rx.link(
-        rx.text(text, size="4", weight="medium"), href=url
+        rx.text(text, size="5", weight="medium"), href=url, underline="none"
     )
 
 # id: is used to identify spesific names to components in the browser
@@ -15,7 +15,7 @@ def navbar() -> rx.Component:
                     rx.link(
                         rx.image(
                         src="/mechanicaai.png",
-                        width="2.25em",
+                        width="3.25em",
                         height="auto",
                         border_radius="25%",
                         ),
@@ -25,7 +25,8 @@ def navbar() -> rx.Component:
                         rx.heading(
                         "Mechanica AI", size="7", weight="bold"
                         ),
-                        href="/"
+                        href="/",
+                        underline="none"
                     ),
                     align_items="center",
                 ),
@@ -54,14 +55,19 @@ def navbar() -> rx.Component:
         rx.mobile_and_tablet(
             rx.hstack(
                 rx.hstack(
-                    rx.image(
+                    rx.link(rx.image(
                         src="/mechanicaai.png",
-                        width="2em",
+                        width="2.25em",
                         height="auto",
                         border_radius="25%",
                     ),
-                    rx.heading(
-                        "Reflex", size="6", weight="bold"
+                    href='/'),
+                    rx.link(
+                        rx.heading(
+                        "Mechanica AI", size="6", weight="bold"
+                    ),
+                    href="/",
+                    underline="none"
                     ),
                     align_items="center",
                 ),
@@ -70,10 +76,10 @@ def navbar() -> rx.Component:
                         rx.icon("menu", size=30)
                     ),
                     rx.menu.content(
-                        rx.menu.item("Home"),
-                        rx.menu.item("About"),
-                        rx.menu.item("Pricing"),
-                        rx.menu.item("Contact"),
+                        rx.menu.item(rx.link("Home", href="/", underline="none")),
+                        rx.menu.item(rx.link("About", href="/about", underline="none")),
+                        rx.menu.item(rx.link("Pricing", href="/pricing", underline="none")),
+                        rx.menu.item(rx.link("Contact", href="/contact", underline="none")),
                         rx.menu.separator(),
                         rx.menu.item("Log in"),
                         rx.menu.item("Sign up"),
