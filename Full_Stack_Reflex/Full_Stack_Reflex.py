@@ -38,5 +38,6 @@ def index() -> rx.Component:
 
 app = rx.App()
 app.add_page(index)
-app.add_page(pages.about_page, route=navigation.routes.ABOUT_ROUTE)
-app.add_page(pages.pricing_page, route=navigation.routes.PRICING_ROUTE)
+# app.add_page(pages.about_page, route=navigation.routes.ABOUT_ROUTE)
+# app.add_page(pages.pricing_page, route=navigation.routes.PRICING_ROUTE)
+# app.add_page(pages.contact_page, route=navigation.routes.CONTACT_ROUTE)

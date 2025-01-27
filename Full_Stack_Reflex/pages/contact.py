@@ -3,20 +3,21 @@ from .. import navigation
 from ..ui.base import base_page
 
 
-@rx.page(route=navigation.routes.ABOUT_ROUTE)
-def about_page() -> rx.Component:
+@rx.page(route=navigation.routes.CONTACT_ROUTE)
+def contact_page() -> rx.Component:
 
     my_child = rx.vstack(
-            rx.heading("About Page", size="9"),
+            rx.heading("Contact Page", size="9"),
             rx.text(
-                "Something cool about page",
+                "There is a contact list",
+                color_scheme='bronze'
             ),
             spacing="5",
             justify="center",
             align='center',
             text_align='center',
             min_height="85vh",
-            id='about-child'
+            id='contact-child'
         )
     
     return base_page(my_child)

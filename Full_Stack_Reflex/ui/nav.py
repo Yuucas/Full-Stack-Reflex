@@ -78,10 +78,14 @@ def navbar() -> rx.Component:
                         rx.icon("menu", size=30)
                     ),
                     rx.menu.content(
-                        rx.menu.item(rx.link("Home", href=navigation.routes.HOME_ROUTE, underline="none")),
-                        rx.menu.item(rx.link("About", href=navigation.routes.ABOUT_ROUTE, underline="none")),
-                        rx.menu.item(rx.link("Pricing", href=navigation.routes.PRICING_ROUTE, underline="none")),
-                        rx.menu.item(rx.link("Contact", href=navigation.routes.CONTACT_ROUTE, underline="none")),
+                        # rx.menu.item(rx.link("Home", href=navigation.routes.HOME_ROUTE, underline="none")),
+                        # rx.menu.item(rx.link("About", href=navigation.routes.ABOUT_ROUTE, underline="none")),
+                        # rx.menu.item(rx.link("Pricing", href=navigation.routes.PRICING_ROUTE, underline="none")),
+                        # rx.menu.item(rx.link("Contact", href=navigation.routes.CONTACT_ROUTE, underline="none")),
+                        rx.menu.item("Home", on_click=navigation.NavState.to_home),
+                        rx.menu.item("About", on_click=navigation.NavState.to_about),
+                        rx.menu.item("Pricing", on_click=navigation.NavState.to_pricing),
+                        rx.menu.item("Contact", on_click=navigation.NavState.to_contact),
                         rx.menu.separator(),
                         rx.menu.item("Log in"),
                         rx.menu.item("Sign up"),
