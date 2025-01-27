@@ -5,7 +5,7 @@ import reflex as rx
 from rxconfig import config
 
 from .ui.base import base_page
-from . import pages
+from . import pages, navigation
 
 
 class State(rx.State):
@@ -17,7 +17,7 @@ class State(rx.State):
 
     def did_click(self):
         print("Hello Did Click")
-        return rx.redirect(path="/about")
+        return rx.redirect(path=navigation.routes.ABOUT_ROUTE)
 
 
 def index() -> rx.Component:
@@ -38,5 +38,5 @@ def index() -> rx.Component:
 
 app = rx.App()
 app.add_page(index)
-# app.add_page(pages.about_page, route='/about')
-app.add_page(pages.pricing_page, route='/pricing')
+app.add_page(pages.about_page, route=navigation.routes.ABOUT_ROUTE)
+app.add_page(pages.pricing_page, route=navigation.routes.PRICING_ROUTE)

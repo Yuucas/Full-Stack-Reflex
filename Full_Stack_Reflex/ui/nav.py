@@ -1,5 +1,7 @@
 import reflex as rx
 
+from .. import navigation
+
 
 def navbar_link(text: str, url: str) -> rx.Component:
     return rx.link(
@@ -19,22 +21,22 @@ def navbar() -> rx.Component:
                         height="auto",
                         border_radius="25%",
                         ),
-                        href='/'
+                        href=navigation.routes.HOME_ROUTE
                     ),
                     rx.link(
                         rx.heading(
                         "Mechanica AI", size="7", weight="bold"
                         ),
-                        href="/",
+                        href=navigation.routes.HOME_ROUTE,
                         underline="none"
                     ),
                     align_items="center",
                 ),
                 rx.hstack(
-                    navbar_link("Home", "/#"),
-                    navbar_link("About", "/about"),
-                    navbar_link("Pricing", "/pricing"),
-                    navbar_link("Contact", "/contact"),
+                    navbar_link("Home", navigation.routes.HOME_ROUTE),
+                    navbar_link("About", navigation.routes.ABOUT_ROUTE),
+                    navbar_link("Pricing", navigation.routes.PRICING_ROUTE),
+                    navbar_link("Contact", navigation.routes.CONTACT_ROUTE),
                     spacing="5",
                 ),
                 rx.hstack(
@@ -61,12 +63,12 @@ def navbar() -> rx.Component:
                         height="auto",
                         border_radius="25%",
                     ),
-                    href='/'),
+                    href=navigation.routes.HOME_ROUTE),
                     rx.link(
                         rx.heading(
                         "Mechanica AI", size="6", weight="bold"
                     ),
-                    href="/",
+                    href=navigation.routes.HOME_ROUTE,
                     underline="none"
                     ),
                     align_items="center",
@@ -76,10 +78,10 @@ def navbar() -> rx.Component:
                         rx.icon("menu", size=30)
                     ),
                     rx.menu.content(
-                        rx.menu.item(rx.link("Home", href="/", underline="none")),
-                        rx.menu.item(rx.link("About", href="/about", underline="none")),
-                        rx.menu.item(rx.link("Pricing", href="/pricing", underline="none")),
-                        rx.menu.item(rx.link("Contact", href="/contact", underline="none")),
+                        rx.menu.item(rx.link("Home", href=navigation.routes.HOME_ROUTE, underline="none")),
+                        rx.menu.item(rx.link("About", href=navigation.routes.ABOUT_ROUTE, underline="none")),
+                        rx.menu.item(rx.link("Pricing", href=navigation.routes.PRICING_ROUTE, underline="none")),
+                        rx.menu.item(rx.link("Contact", href=navigation.routes.CONTACT_ROUTE, underline="none")),
                         rx.menu.separator(),
                         rx.menu.item("Log in"),
                         rx.menu.item("Sign up"),
