@@ -38,7 +38,7 @@ class ContactState(rx.State):
 
 @rx.page(
     on_load=ContactState.start_timer,
-    route=navigation.routes.CONTACT_ROUTE
+    route=navigation.routes.CONTACT_ROUTE,
     )
 def contact_page() -> rx.Component:
     contact_form = rx.form(
@@ -83,6 +83,7 @@ def contact_page() -> rx.Component:
             ),
     my_child = rx.vstack(
             rx.heading("Contact Page", size="9"),
+            rx.text(ContactState.timeleft_label, size="5"),
             rx.cond(condition=ContactState.did_submit, c1=ContactState.thank_you, c2=" "),    
             rx.desktop_only(
                 rx.box(
