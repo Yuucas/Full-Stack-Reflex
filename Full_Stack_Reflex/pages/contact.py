@@ -1,3 +1,5 @@
+import time
+import asyncio
 import reflex as rx
 from .. import navigation
 from ..ui.base import base_page
@@ -9,13 +11,17 @@ class ContactState(rx.State):
 
     @rx.var(cache=True)
     def thank_you(self):
-        first_name = self.form_data.get('first_name')
-        return f"Thank You , {first_name} for submission!" if first_name else "Submission if failed!"
+        first_name = self.form_data.get('first_name') or " "
+        return f"Thank You , {first_name} for submission!"
 
-    def handle_submit(self, form_data: dict):
+    async def handle_submit(self, form_data: dict):
         print(form_data)
         self.form_data = form_data
         self.did_submit = True
+        yield
+        await asyncio.sleep(2)
+        self.did_submit = False
+        yield
 
 @rx.page(route=navigation.routes.CONTACT_ROUTE)
 def contact_page() -> rx.Component:
