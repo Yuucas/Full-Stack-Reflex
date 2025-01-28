@@ -8,6 +8,13 @@ from ..ui.base import base_page
 class ContactState(rx.State):
     form_data: dict = {}
     did_submit: bool = False
+    timeleft: int = 5
+
+    @rx.var(cache=True)
+    def timeleft_label(self):
+        if self.timeleft < 1:
+            return "Time's up!"
+        return f"{self.timeleft} seconds"
 
     @rx.var(cache=True)
     def thank_you(self):
@@ -23,7 +30,16 @@ class ContactState(rx.State):
         self.did_submit = False
         yield
 
-@rx.page(route=navigation.routes.CONTACT_ROUTE)
+    async def start_timer(self):
+        while self.timeleft > 0:
+            await asyncio.sleep(1)
+            self.timeleft -= 1
+            yield
+
+@rx.page(
+    on_load=ContactState.start_timer,
+    route=navigation.routes.CONTACT_ROUTE
+    )
 def contact_page() -> rx.Component:
     contact_form = rx.form(
                 rx.vstack(
