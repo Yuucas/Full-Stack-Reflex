@@ -7,6 +7,11 @@ class ContactState(rx.State):
     form_data: dict = {}
     did_submit: bool = False
 
+    @rx.var(cache=True)
+    def thank_you(self):
+        first_name = self.form_data.get('first_name')
+        return f"Thank You , {first_name} for submission!" if first_name else "Submission if failed!"
+
     def handle_submit(self, form_data: dict):
         print(form_data)
         self.form_data = form_data
@@ -56,7 +61,7 @@ def contact_page() -> rx.Component:
             ),
     my_child = rx.vstack(
             rx.heading("Contact Page", size="9"),
-            rx.cond(condition=ContactState.did_submit, c1=rx.text('Submitted')),    
+            rx.cond(condition=ContactState.did_submit, c1=ContactState.thank_you, c2=" "),    
             rx.desktop_only(
                 rx.box(
                     contact_form,
