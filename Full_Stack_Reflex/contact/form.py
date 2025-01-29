@@ -19,6 +19,12 @@ def contact_form() -> rx.Component:
                             type='text',
                             width='100%'
                         ),
+                        rx.input(
+                            name="age",
+                            placeholder="Age",
+                            type='text',
+                            width='100%'
+                        ),
                         width='100%',
                         align='stretch'
                     ),

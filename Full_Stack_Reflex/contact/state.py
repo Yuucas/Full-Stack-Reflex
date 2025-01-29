@@ -41,9 +41,41 @@ class ContactState(rx.State):
         self.did_submit = False
         yield
 
+    @rx.event
     def list_entries(self):
         with rx.session() as session:
             entries = session.exec(
                 select(ContactEntryModel)
             ).all()
             self.entries = entries
+
+
+def show_contacts(contact: ContactEntryModel):
+    """Show a customer in a table row."""
+    return rx.table.row(
+        rx.table.cell(f"{contact.first_name} {contact.last_name}"),
+        rx.table.cell(contact.age),
+        rx.table.cell(contact.email),
+        rx.table.cell(contact.message),
+        rx.table.cell(contact.create_date),
+    )
+
+def loading_contact_entries_table():
+    return rx.table.root(
+            rx.table.header(
+                rx.table.row(
+                    rx.table.column_header_cell("Full Name"),
+                    rx.table.column_header_cell("Age"),
+                    rx.table.column_header_cell("Email"),
+                    rx.table.column_header_cell("Message"),
+                    rx.table.column_header_cell("Submission Date"),
+                ),
+            ),
+            rx.table.body(
+                rx.foreach(
+                    ContactState.entries, show_contacts
+                )
+            ),
+            on_mount=ContactState.list_entries,
+            width="50%",
+        )
