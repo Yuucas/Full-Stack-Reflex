@@ -4,6 +4,13 @@ import reflex as rx
 from .. import navigation
 from ..ui.base import base_page
 
+class ContacEntryModel(rx.Model, table=True):
+    # Define scheme
+    first_name: str
+    last_name: str
+    email: str
+    message: str
+
 
 class ContactState(rx.State):
     form_data: dict = {}
@@ -22,22 +29,31 @@ class ContactState(rx.State):
         return f"Thank You , {first_name} for submission!"
 
     async def handle_submit(self, form_data: dict):
-        print(form_data)
         self.form_data = form_data
-        self.did_submit = True
+        data = {}
+        # Delete key if it's value is empty
+        for key, value in form_data.items():
+            if value == "" or value == None:
+                continue
+            data[key] = value
+
+        # Commit into database
+        with rx.session() as session:
+            db_entry = ContacEntryModel(
+                **form_data
+            )
+            session.add(db_entry)
+            session.commit()
+            self.did_submit = True
         yield
+
+        # Sleep the function for 2 seconds
         await asyncio.sleep(2)
         self.did_submit = False
         yield
 
-    async def start_timer(self):
-        while self.timeleft > 0:
-            await asyncio.sleep(1)
-            self.timeleft -= 1
-            yield
 
 @rx.page(
-    on_load=ContactState.start_timer,
     route=navigation.routes.CONTACT_ROUTE,
     )
 def contact_page() -> rx.Component:
@@ -83,7 +99,6 @@ def contact_page() -> rx.Component:
             ),
     my_child = rx.vstack(
             rx.heading("Contact Page", size="9"),
-            rx.text(ContactState.timeleft_label, size="5"),
             rx.cond(condition=ContactState.did_submit, c1=ContactState.thank_you, c2=" "),    
             rx.desktop_only(
                 rx.box(
