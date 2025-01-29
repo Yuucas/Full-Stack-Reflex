@@ -1,12 +1,15 @@
 from datetime import datetime, timezone
+from typing import List
 import asyncio
 import reflex as rx
 
-from .model import ContacEntryModel
+from sqlmodel import select
+from .model import ContactEntryModel
 
 
 class ContactState(rx.State):
     form_data: dict = {}
+    entries: List['ContactEntryModel'] = []
     did_submit: bool = False
 
     @rx.var(cache=True)
@@ -25,7 +28,7 @@ class ContactState(rx.State):
 
         # Commit into database
         with rx.session() as session:
-            db_entry = ContacEntryModel(
+            db_entry = ContactEntryModel(
                 **form_data
             )
             session.add(db_entry)
@@ -37,3 +40,10 @@ class ContactState(rx.State):
         await asyncio.sleep(2)
         self.did_submit = False
         yield
+
+    def list_entries(self):
+        with rx.session() as session:
+            entries = session.exec(
+                select(ContactEntryModel)
+            ).all()
+            self.entries = entries

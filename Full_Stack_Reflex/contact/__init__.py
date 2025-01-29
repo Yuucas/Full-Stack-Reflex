@@ -1,7 +1,9 @@
 from .state import ContactState
+from .model import ContactEntryModel
 from .form import contact_form
 
 __all__ = [
-    'contact_form',
     'ContactState',
+    'ContactEntryModel',
+    'contact_form',
 ]
