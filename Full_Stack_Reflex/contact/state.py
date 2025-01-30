@@ -3,7 +3,7 @@ from typing import List
 import asyncio
 import reflex as rx
 
-from sqlmodel import select, asc, or_
+from sqlmodel import select, asc, or_, desc, func
 from .model import ContactEntryModel
 
 
@@ -58,24 +58,42 @@ class ContactState(rx.State):
             query = select(ContactEntryModel)
 
             if self.search_value != "":
+                print("SEARCH VALUE: ", self.search_value)
+
                 search_value = (
                     f"%{self.search_value.lower()}%"
                 )
-                query = query.where(
-                    or_(
-                        ContactEntryModel.first_name.ilike(search_value),
-                        ContactEntryModel.age.ilike(search_value),
-                        ContactEntryModel.email.ilike(search_value),
-                        ContactEntryModel.message.ilike(search_value),
-                        ContactEntryModel.create_date.ilike(search_value),
-                    )
+                search_conditions = or_(
+                    ContactEntryModel.first_name.ilike(search_value),
+                    ContactEntryModel.age == int(self.search_value),
+                    ContactEntryModel.email.ilike(search_value),
+                    ContactEntryModel.message.ilike(search_value),
+                    # ContactEntryModel.create_date.ilike(search_value)
+                    func.to_char(ContactEntryModel.create_date, 'YYYY-MM-DD HH24:MI:SS').ilike(search_value)
                 )
 
+                print("SERCH CONDITION ", search_conditions)
+                ######################################################
+                 # Add age search only if the search value is numeric
+                # if self.search_value.isdigit():
+                #     search_conditions = or_(
+                #         search_conditions,
+                #         ContactEntryModel.age == int(self.search_value)
+                #     )
+                ######################################################
+                
+                query = query.where(search_conditions)
+
+
             if self.sort_value != "":
+                print("SORT VALUE: ", self.sort_value)
+                value_and_order = self.sort_value.split()  # Splits the string
+
                 sort_column = getattr(
-                    ContactEntryModel, self.sort_value
+                    ContactEntryModel, value_and_order[0]
                 )
-                order = asc(sort_column)
+
+                order = asc(sort_column) if value_and_order[1] == "asc" else desc(sort_column)
                 query = query.order_by(order)
 
             self.entries = session.exec(query).all()
@@ -128,11 +146,16 @@ def loading_contact_entries_table_v2():
             rx.select.content(
                 rx.select.group(
                 rx.select.label("Order By:"),
-                rx.select.item("Name", value="first_name"),
-                rx.select.item("Age", value="age"),
-                rx.select.item("E-mail", value="email"),
-                rx.select.item("Message", value="message"),
-                rx.select.item("Date", value="create_date"),
+                rx.select.item("Sort name by ascending order", value="first_name asc"),
+                rx.select.item("Sort name by descending order", value="first_name desc"),
+                rx.select.item("Sort age by ascending order", value="age asc"),
+                rx.select.item("Sort age by descending order", value="age desc"),
+                rx.select.item("Sort e-mail by ascending order", value="email asc"),
+                rx.select.item("Sort e-mail by descending order", value="email desc"),
+                rx.select.item("Sort message by ascending order", value="message asc"),
+                rx.select.item("Sort message by descending order", value="message desc"),
+                rx.select.item("Sort date by ascending order", value="create_date asc"),
+                rx.select.item("Sort date by descending order", value="create_date desc"),
                 ),
             ),
         on_change=lambda value: ContactState.sort_values(

@@ -18,7 +18,7 @@ class ContactEntryModel(rx.Model, table=True):
     # Define scheme
     first_name: str
     last_name: str | None = None
-    age: int = Field(nullable=True)
+    age: str = Field(nullable=True)
     email: str = Field(nullable=True)
     message: str
     create_date: datetime = Field(
