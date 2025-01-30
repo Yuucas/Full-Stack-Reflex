@@ -6,14 +6,14 @@ from ..ui.base import base_page
 
 
 
-@rx.page(route=navigation.routes.CONTACT_ENTRIES_ROUTE, on_load=contact.ContactState.list_entries)
+@rx.page(route=navigation.routes.CONTACT_ENTRIES_ROUTE, on_load=contact.ContactState.load_entries_v2)
 def contact_entries_list_page() -> rx.Component:
 
     return base_page(
         rx.vstack(
             rx.heading("Contact Entries Page", size="9"),
             # rx.foreach(["abc", "bcc", "cde"], foreach_callback) # You can call "for statement" in reflex using rx.foreach()
-            contact.loading_contact_entries_table(),
+            contact.loading_contact_entries_table_v2(),
             spacing="8",
             justify="center",
             align="center",

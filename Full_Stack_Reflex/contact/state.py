@@ -3,13 +3,15 @@ from typing import List
 import asyncio
 import reflex as rx
 
-from sqlmodel import select
+from sqlmodel import select, asc, or_
 from .model import ContactEntryModel
 
 
 class ContactState(rx.State):
     form_data: dict = {}
     entries: List['ContactEntryModel'] = []
+    sort_value = ""
+    search_value = ""
     did_submit: bool = False
 
     @rx.var(cache=True)
@@ -42,12 +44,50 @@ class ContactState(rx.State):
         yield
 
     @rx.event
-    def list_entries(self):
+    def load_entries(self):
         with rx.session() as session:
             entries = session.exec(
                 select(ContactEntryModel)
             ).all()
             self.entries = entries
+
+    @rx.event
+    def load_entries_v2(self):
+        """Get all users from the database."""
+        with rx.session() as session:
+            query = select(ContactEntryModel)
+
+            if self.search_value != "":
+                search_value = (
+                    f"%{self.search_value.lower()}%"
+                )
+                query = query.where(
+                    or_(
+                        ContactEntryModel.first_name.ilike(search_value),
+                        ContactEntryModel.age.ilike(search_value),
+                        ContactEntryModel.email.ilike(search_value),
+                        ContactEntryModel.create_date.ilike(search_value),
+                    )
+                )
+
+            if self.sort_value != "":
+                sort_column = getattr(
+                    ContactEntryModel, self.sort_value
+                )
+                order = asc(sort_column)
+                query = query.order_by(order)
+
+            self.entries = session.exec(query).all()
+
+    @rx.event
+    def sort_values(self, sort_value):
+        self.sort_value = sort_value
+        self.load_entries_v2()
+
+    @rx.event
+    def filter_values(self, search_value):
+        self.search_value = search_value
+        self.load_entries_v2()
 
 
 def show_contacts(contact: ContactEntryModel):
@@ -76,6 +116,42 @@ def loading_contact_entries_table():
                     ContactState.entries, show_contacts
                 )
             ),
-            on_mount=ContactState.list_entries,
+            on_mount=ContactState.load_entries,
             width="50%",
         )
+
+def loading_contact_entries_table_v2():
+    return rx.vstack(
+        rx.select(
+            ["first_name", "age", "email", "message", "create_date"],
+            placeholder="Sort By:",
+            on_change=lambda value: ContactState.sort_values(
+                value
+            ),
+        ),
+        rx.input(
+            placeholder="Search here...",
+            on_change=lambda value: ContactState.filter_values(
+                value
+            ),
+        ),
+        rx.table.root(
+            rx.table.header(
+                rx.table.row(
+                    rx.table.column_header_cell("Full Name"),
+                    rx.table.column_header_cell("Age"),
+                    rx.table.column_header_cell("Email"),
+                    rx.table.column_header_cell("Message"),
+                    rx.table.column_header_cell("Submission Date"),
+                ),
+            ),
+            rx.table.body(
+                rx.foreach(
+                    ContactState.entries, show_contacts
+                )
+            ),
+            on_mount=ContactState.load_entries_v2,
+            width="100%",
+        ),
+        width="100%",
+    )
