@@ -66,6 +66,7 @@ class ContactState(rx.State):
                         ContactEntryModel.first_name.ilike(search_value),
                         ContactEntryModel.age.ilike(search_value),
                         ContactEntryModel.email.ilike(search_value),
+                        ContactEntryModel.message.ilike(search_value),
                         ContactEntryModel.create_date.ilike(search_value),
                     )
                 )
@@ -122,10 +123,19 @@ def loading_contact_entries_table():
 
 def loading_contact_entries_table_v2():
     return rx.vstack(
-        rx.select(
-            ["first_name", "age", "email", "message", "create_date"],
-            placeholder="Sort By:",
-            on_change=lambda value: ContactState.sort_values(
+        rx.select.root(
+            rx.select.trigger(),
+            rx.select.content(
+                rx.select.group(
+                rx.select.label("Order By:"),
+                rx.select.item("Name", value="first_name"),
+                rx.select.item("Age", value="age"),
+                rx.select.item("E-mail", value="email"),
+                rx.select.item("Message", value="message"),
+                rx.select.item("Date", value="create_date"),
+                ),
+            ),
+        on_change=lambda value: ContactState.sort_values(
                 value
             ),
         ),
