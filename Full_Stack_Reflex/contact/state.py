@@ -65,7 +65,7 @@ class ContactState(rx.State):
                 )
                 search_conditions = or_(
                     ContactEntryModel.first_name.ilike(search_value),
-                    ContactEntryModel.age == int(self.search_value),
+                    # ContactEntryModel.age == int(self.search_value),
                     ContactEntryModel.email.ilike(search_value),
                     ContactEntryModel.message.ilike(search_value),
                     # ContactEntryModel.create_date.ilike(search_value)
@@ -74,12 +74,12 @@ class ContactState(rx.State):
 
                 print("SERCH CONDITION ", search_conditions)
                 ######################################################
-                 # Add age search only if the search value is numeric
-                # if self.search_value.isdigit():
-                #     search_conditions = or_(
-                #         search_conditions,
-                #         ContactEntryModel.age == int(self.search_value)
-                #     )
+                # Add age search only if the search value is numeric
+                if self.search_value.isdigit():
+                    search_conditions = or_(
+                        search_conditions,
+                        ContactEntryModel.age == int(self.search_value)
+                    )
                 ######################################################
                 
                 query = query.where(search_conditions)

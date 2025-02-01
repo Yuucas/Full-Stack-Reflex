@@ -3,4 +3,5 @@ from .states import NavState
 
 all = [
     'routes'
+    'NavState'
 ]

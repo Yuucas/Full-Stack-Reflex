@@ -3,7 +3,7 @@ from .. import navigation
 from ..ui.base import base_page
 
 
-@rx.page(route=navigation.routes.ABOUT_ROUTE)
+# @rx.page(route=navigation.routes.ABOUT_ROUTE)
 def about_page() -> rx.Component:
 
     my_child = rx.vstack(

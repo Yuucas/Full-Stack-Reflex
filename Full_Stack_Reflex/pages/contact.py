@@ -6,7 +6,7 @@ from ..ui.base import base_page
 
 
 
-@rx.page(route=navigation.routes.CONTACT_ENTRIES_ROUTE, on_load=contact.ContactState.load_entries_v2)
+# @rx.page(route=navigation.routes.CONTACT_ENTRIES_ROUTE, on_load=contact.ContactState.load_entries_v2)
 def contact_entries_list_page() -> rx.Component:
 
     return base_page(
@@ -22,7 +22,7 @@ def contact_entries_list_page() -> rx.Component:
     )
 
 
-@rx.page(route=navigation.routes.CONTACT_ROUTE)
+# @rx.page(route=navigation.routes.CONTACT_ROUTE)
 def contact_page() -> rx.Component:
 
     my_child = rx.vstack(
