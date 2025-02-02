@@ -10,7 +10,7 @@ from . import blog, contact, pages, navigation
 
 class State(rx.State):
     """The app state."""
-    label = "Welcome to Reflex!"
+    label = "Selamın Aleyküm"
 
     def handle_title_input_change(self, val):
         self.label = val
@@ -60,6 +60,12 @@ app.add_page(
 app.add_page(
     blog.blog_post_detail_page, 
     route="/blog/[blog_id]",
+    on_load=blog.BlogPostState.get_post_detail
+)
+
+app.add_page(
+    blog.blog_post_edit_page, 
+    route="/blog/[blog_id]/edit",
     on_load=blog.BlogPostState.get_post_detail
 )
 
