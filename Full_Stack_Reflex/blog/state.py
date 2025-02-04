@@ -16,12 +16,17 @@ class BlogPostState(rx.State):
 
     @rx.var(cache=True)
     def is_editable(self) -> bool:
-        # Add your editable logic here
-        return True  # Or some condition
+        return True
 
     @rx.var(cache=True)
     def edit_link_path(self) -> str:
-        return f"/blog/{self.blog_post_id}/edit" if self.is_editable else f"/blog/{self.blog_post_id}"
+        return f"{navigation.routes.BLOG_POST_ROUTE}/{self.blog_post_id}/edit" if self.is_editable else f"{navigation.routes.BLOG_POST_ROUTE}/{self.blog_post_id}"
+    
+    def blog_link_redirect(self):
+        if not self.post:
+            return rx.redirect(navigation.routes.BLOG_POST_ROUTE)
+        return rx.redirect(f"{navigation.routes.BLOG_POST_ROUTE}/{self.post.id}")
+    
 
     def get_id_value(self, id_param) -> Optional[int]:
         """Extract the actual ID value from various possible types."""
@@ -75,7 +80,7 @@ class BlogPostState(rx.State):
 
                 self.post = result
                 self.post_content = self.post.content
-                
+
             except Exception as e:
                 print(f"Error fetching post detail: {e}")
                 self.post = None
@@ -122,9 +127,12 @@ class BlogAddPostFormState(BlogPostState):
     form_data: dict = {}
 
     def handle_submit(self, form_data):
+
         self.form_data = form_data
         self.add_post(form_data)
 
+        return self.blog_link_redirect()
+    
 #####################################################################
 
 class BlogEditFormState(BlogPostState):
@@ -132,24 +140,30 @@ class BlogEditFormState(BlogPostState):
     # post_content: str = ""
 
     def handle_submit(self, form_data):
+
         self.form_data = form_data
         post_id = form_data.pop('post_id')
         updated_data = {**form_data}
         self.save_post_edits(post_id, updated_data)
+
+        return self.blog_link_redirect()
 
 
 #####################################################################
 
 def blog_post_detail_link(child: rx.Component, post: BlogPostModel):
     """Create a link to a blog post detail page."""
+
     if post is None:
         return rx.fragment(child)
     post_id = post.id
     root_path = navigation.routes.BLOG_POST_ROUTE
     post_detail_url = f"{root_path}/{post_id}"
+
     return rx.link(child, href=post_detail_url)
 
 def blog_post_list_item(post: BlogPostModel):
+
     return rx.box(
         blog_post_detail_link(
             rx.heading(post.title),
