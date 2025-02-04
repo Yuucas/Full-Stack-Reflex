@@ -14,6 +14,15 @@ class BlogPostState(rx.State):
     post: Optional[BlogPostModel] = None
     post_content: str | None = None
 
+    @rx.var(cache=True)
+    def is_editable(self) -> bool:
+        # Add your editable logic here
+        return True  # Or some condition
+
+    @rx.var(cache=True)
+    def edit_link_path(self) -> str:
+        return f"/blog/{self.blog_post_id}/edit" if self.is_editable else f"/blog/{self.blog_post_id}"
+
     def get_id_value(self, id_param) -> Optional[int]:
         """Extract the actual ID value from various possible types."""
         try:
@@ -63,8 +72,10 @@ class BlogPostState(rx.State):
                         BlogPostModel.id == post_id
                     )
                 ).one_or_none()
+
                 self.post = result
                 self.post_content = self.post.content
+                
             except Exception as e:
                 print(f"Error fetching post detail: {e}")
                 self.post = None
