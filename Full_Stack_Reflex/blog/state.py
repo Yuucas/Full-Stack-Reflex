@@ -12,6 +12,7 @@ from .model import BlogPostModel
 class BlogPostState(rx.State):
     posts: List[BlogPostModel] = []
     post: Optional[BlogPostModel] = None
+    post_content: str | None = None
 
     def get_id_value(self, id_param) -> Optional[int]:
         """Extract the actual ID value from various possible types."""
@@ -63,12 +64,17 @@ class BlogPostState(rx.State):
                     )
                 ).one_or_none()
                 self.post = result
+                self.post_content = self.post.content
             except Exception as e:
                 print(f"Error fetching post detail: {e}")
                 self.post = None
 
-    def get_post(self, post_id):
-        pass
+    def get_post(self):
+        with rx.session() as session:
+            result = session.exec(
+                select(BlogPostModel)
+            )
+            self.posts = result
 
     def add_post(self, form_data:dict):
         with rx.session() as session:
@@ -80,6 +86,25 @@ class BlogPostState(rx.State):
             # print("added", post)
             self.post = post
 
+    def save_post_edits(self, post_id:int, updated_data:dict):
+        with rx.session() as session:
+            post = session.exec(
+                    select(BlogPostModel).where(
+                        BlogPostModel.id == post_id
+                    )
+                ).one_or_none()
+            
+            if post is None:
+                return
+            
+            for key, value in updated_data.items():
+                setattr(post, key, value)
+
+            session.add(post)
+            session.commit()
+            session.refresh(post)
+
+
 #####################################################################
 
 class BlogAddPostFormState(BlogPostState):
@@ -88,6 +113,19 @@ class BlogAddPostFormState(BlogPostState):
     def handle_submit(self, form_data):
         self.form_data = form_data
         self.add_post(form_data)
+
+#####################################################################
+
+class BlogEditFormState(BlogPostState):
+    form_data: dict = {}
+    # post_content: str = ""
+
+    def handle_submit(self, form_data):
+        self.form_data = form_data
+        post_id = form_data.pop('post_id')
+        updated_data = {**form_data}
+        self.save_post_edits(post_id, updated_data)
+
 
 #####################################################################
 
