@@ -57,10 +57,23 @@ class BlogPostState(rx.State):
         """Get the blog post ID from the URL parameters."""
         return self.router.page.params.get("blog_id", "")
 
-    def load_posts(self):
-        """Load all blog posts."""
+    def load_posts(self, published_only: bool = False):
+        """
+        Load all blog posts.
+        BlogPostModel.publish_active == True --> is used to get the posts that are published date is not None
+        BlogPostModel.publish_date < datetime.now() --> is used to get the posts that are published date is not None and is less than the current
+        """
+        lookup_args = ()
+        if published_only:
+            lookup_args = (
+                (BlogPostModel.publish_active == True) &
+                (BlogPostModel.publish_date < get_utc_now())
+            )
         with rx.session() as session:
-            result = session.exec(select(BlogPostModel)).all()
+            result = session.exec(select(BlogPostModel).where(
+                *lookup_args
+                )
+            ).all()
             self.posts = result
 
     def get_post_detail(self):
