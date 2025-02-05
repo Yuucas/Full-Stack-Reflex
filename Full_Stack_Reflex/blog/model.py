@@ -26,12 +26,14 @@ class BlogPostModel(rx.Model, table=True):
     nullable=True
     )
 
-    def add_post(self, form_data:dict):
-        with rx.session() as session:
-            post = BlogPostModel(**form_data)
-            # print("adding", post)
-            session.add(post)
-            session.commit()
-            session.refresh(post) # post.id
-            # print("added", post)
-            self.post = post
+    publish_active: bool = False
+
+    # def add_post(self, form_data:dict):
+    #     with rx.session() as session:
+    #         post = BlogPostModel(**form_data)
+    #         # print("adding", post)
+    #         session.add(post)
+    #         session.commit()
+    #         session.refresh(post) # post.id
+    #         # print("added", post)
+    #         self.post = post

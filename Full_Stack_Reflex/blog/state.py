@@ -13,6 +13,7 @@ class BlogPostState(rx.State):
     posts: List[BlogPostModel] = []
     post: Optional[BlogPostModel] = None
     post_content: str | None = None
+    post_publish_active: bool = False
 
     @rx.var(cache=True)
     def is_editable(self) -> bool:
@@ -80,6 +81,7 @@ class BlogPostState(rx.State):
 
                 self.post = result
                 self.post_content = self.post.content
+                self.post_publish_active = self.post.publish_active
 
             except Exception as e:
                 print(f"Error fetching post detail: {e}")
@@ -143,7 +145,23 @@ class BlogEditFormState(BlogPostState):
 
         self.form_data = form_data
         post_id = form_data.pop('post_id')
+        
+        publish_date, publish_time = None, None
+        if 'publish_date' in form_data:
+            publish_date = form_data.pop('publish_date')
+        if 'publish_time' in form_data:
+            publish_time = form_data.pop('publish_time')
+        print(publish_date, " --- ", publish_time)
+
+
+
+        # Check publish active
+        publish_active = False
+        if 'publish_active' in form_data:
+            publish_active = form_data.pop('publish_active') == "on"
+
         updated_data = {**form_data}
+        updated_data['publish_active'] = publish_active
         self.save_post_edits(post_id, updated_data)
 
         return self.blog_link_redirect()
