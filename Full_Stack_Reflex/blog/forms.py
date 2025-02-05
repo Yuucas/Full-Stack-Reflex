@@ -38,7 +38,6 @@ def blog_post_edit_form() -> rx.Component:
     post_content = state.BlogEditFormState.post_content
     # publish_active = post.publish_active
 
-    date = get_utc_now().date()
     time = get_utc_now().strftime("%#H:%M")
 
     print("Time: ", time)
@@ -88,13 +87,13 @@ def blog_post_edit_form() -> rx.Component:
                         rx.hstack(
                             rx.input(
                                 type='date',
-                                default_value=f"{date}",
+                                default_value=f"{state.BlogEditFormState.publish_display_date}",
                                 name='publish_date',
                                 radius='medium'
                             ),
                             rx.input(
                                 type='time',
-                                default_value=f"{time}",
+                                default_value=f"{state.BlogEditFormState.publish_display_time}",
                                 name='publish_time',
                                 radius='medium'
                             ),
